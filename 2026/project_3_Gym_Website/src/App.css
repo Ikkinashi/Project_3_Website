@@ -1,42 +1,167 @@
-#root {
-  max-width: 1280px;
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-secondary);
+}
+
+.navbar {
+  background: white;
+  border-bottom: 1px solid var(--border-color);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.navbar-inner {
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  padding: 0 2rem;
+  height: 68px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.logo-text {
+  font-size: 1.2rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  white-space: nowrap;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
+.logo-text:hover {
+  color: var(--blue-primary);
+}
+
+.nav-toggle {
+  display: none;
+  background: none;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 1.1rem;
+  padding: 0.4rem 0.65rem;
+  cursor: pointer;
+  color: var(--text-primary);
+}
+
+.navbar-links {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.navbar-links a {
+  color: var(--text-secondary);
+  padding: 0.5rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.navbar-links a:hover {
+  background: var(--blue-tint);
+  color: var(--blue-primary);
+}
+
+.navbar-links a.active {
+  background: var(--blue-tint);
+  color: var(--blue-primary);
+}
+
+.navbar-auth {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-left: 0.75rem;
+  padding-left: 0.75rem;
+  border-left: 1px solid var(--border-color);
+}
+
+.signed-in-as {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.signout-btn {
+  padding: 0.5rem 0.9rem;
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.signout-btn:hover {
+  border-color: var(--danger);
+  color: var(--danger);
+  background: rgba(224, 51, 63, 0.06);
+}
+
+.nav-login-btn {
+  padding: 0.5rem 1.2rem !important;
+}
+
+.page-content {
+  flex: 1;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 2rem 3rem;
+}
+
+/* Mobile */
+@media (max-width: 860px) {
+  .nav-toggle {
+    display: block;
   }
-  to {
-    transform: rotate(360deg);
+
+  .navbar-links {
+    position: absolute;
+    top: 68px;
+    left: 0;
+    right: 0;
+    background: white;
+    border-bottom: 1px solid var(--border-color);
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 0.5rem;
+    display: none;
+    box-shadow: 0 8px 24px rgba(16, 20, 34, 0.08);
   }
-}
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+  .navbar-links.open {
+    display: flex;
   }
-}
 
-.card {
-  padding: 2em;
-}
+  .navbar-links a {
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+  }
 
-.read-the-docs {
-  color: #888;
+  .navbar-auth {
+    flex-direction: column;
+    align-items: stretch;
+    margin-left: 0;
+    padding-left: 0;
+    padding-top: 0.5rem;
+    margin-top: 0.5rem;
+    border-left: none;
+    border-top: 1px solid var(--border-color);
+    gap: 0.5rem;
+  }
+
+  .signed-in-as {
+    padding: 0.5rem 1rem;
+  }
 }

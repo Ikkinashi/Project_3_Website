@@ -1,0 +1,8 @@
+.packages-page { padding: 2.5rem 0; }
+.packages-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.25rem; margin-top: 1.75rem; }
+.package-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.6rem; display: flex; flex-direction: column; transition: all 0.2s ease; }
+.package-card:hover { border-color: var(--blue-primary); transform: translateY(-3px); box-shadow: 0 12px 30px rgba(26, 86, 255, 0.1); }
+.package-card h3 { font-size: 1.1rem; text-transform: uppercase; letter-spacing: 0.03em; }
+.package-price { font-weight: 800; font-size: 1.6rem; color: var(--blue-primary); margin: 0.6rem 0; }
+.package-features { margin: 0.9rem 0 1.2rem; padding-left: 1.1rem; font-size: 0.85rem; color: var(--text-secondary); line-height: 1.7; }
+.package-card .btn { margin-top: auto; }
