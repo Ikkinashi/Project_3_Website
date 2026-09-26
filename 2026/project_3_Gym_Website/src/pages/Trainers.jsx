@@ -18,11 +18,8 @@ function Trainers() {
                     profiles ( full_name, email )
                 `)
 
-            if (error) {
-                setError(error.message)
-            } else {
-                setTrainers(data)
-            }
+            if (error) setError(error.message)
+            else setTrainers(data)
             setLoading(false)
         }
 
@@ -34,7 +31,11 @@ function Trainers() {
 
     return (
         <div className="trainers-page">
-            <h1>Trainers</h1>
+            <div className="page-hero">
+                <span className="eyebrow">Meet the Team</span>
+                <h1>Trainers</h1>
+                <p>Certified coaches ready to help you hit your goals.</p>
+            </div>
 
             {trainers.length === 0 ? (
                 <p>No trainers listed yet.</p>

@@ -28,15 +28,10 @@ function Billing() {
                     .order('created_at', { ascending: false }),
             ])
 
-            if (subResult.error) {
-                setError(subResult.error.message)
-            } else {
-                setSubscription(subResult.data)
-            }
+            if (subResult.error) setError(subResult.error.message)
+            else setSubscription(subResult.data)
 
-            if (invoiceResult.data) {
-                setInvoices(invoiceResult.data)
-            }
+            if (invoiceResult.data) setInvoices(invoiceResult.data)
 
             setLoading(false)
         }
@@ -49,7 +44,11 @@ function Billing() {
 
     return (
         <div className="billing-page">
-            <h1>Billing</h1>
+            <div className="page-hero">
+                <span className="eyebrow">Account</span>
+                <h1>Billing</h1>
+                <p>Manage your subscription and view invoice history.</p>
+            </div>
 
             <section className="current-plan">
                 <h2>Current Plan</h2>

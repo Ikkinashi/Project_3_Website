@@ -27,67 +27,90 @@ function Signup() {
             return
         }
 
-        // If email confirmation is on (default in Supabase), the user
-        // needs to confirm before they can log in.
         setSuccess(true)
         setTimeout(() => navigate('/login'), 2000)
     }
 
-    // Note: every new signup gets role = 'member' by default (set in the DB trigger).
-    // To create trainer/admin accounts, sign up normally then update the role
-    // in the Supabase Table Editor, or build an admin-only "promote user" screen.
-
     return (
         <div className="auth-page">
-            <form className="auth-form" onSubmit={handleSubmit}>
-                <h2>Sign Up</h2>
-
-                {error && <p className="auth-error">{error}</p>}
-                {success && (
-                    <p className="auth-success">
-                        Account created! Check your email to confirm, then log in.
+            <div className="auth-container">
+                <div className="auth-brand">
+                    <div className="brand-label">FORGE FITNESS</div>
+                    <h1>
+                        START YOUR
+                        <span>TRANSFORMATION.</span>
+                    </h1>
+                    <p>
+                        Join a community built on discipline, progress, and
+                        results. Your first step starts here.
                     </p>
-                )}
+                    <div className="brand-line" />
+                    <small>PERFORMANCE • DISCIPLINE • PROGRESS</small>
+                </div>
 
-                <label>
-                    Full Name
-                    <input
-                        type="text"
-                        value={fullName}
-                        onChange={(e) => setFullName(e.target.value)}
-                        required
-                    />
-                </label>
+                <div className="auth-card">
+                    <div className="auth-header">
+                        <span className="auth-overline">NEW MEMBER</span>
+                        <h2>Create Account</h2>
+                        <p>Sign up to start training with Forge Fitness.</p>
+                    </div>
 
-                <label>
-                    Email
-                    <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                    />
-                </label>
+                    <form className="auth-form" onSubmit={handleSubmit}>
+                        {error && <p className="auth-error">{error}</p>}
+                        {success && (
+                            <p className="auth-success">
+                                Account created! Check your email to confirm, then log in.
+                            </p>
+                        )}
 
-                <label>
-                    Password
-                    <input
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        minLength={6}
-                        required
-                    />
-                </label>
+                        <div className="input-group">
+                            <label htmlFor="fullName">Full Name</label>
+                            <input
+                                id="fullName"
+                                type="text"
+                                placeholder="Enter your full name"
+                                value={fullName}
+                                onChange={(e) => setFullName(e.target.value)}
+                                required
+                            />
+                        </div>
 
-                <button type="submit" className="btn primary" disabled={submitting}>
-                    {submitting ? 'Creating account...' : 'Sign Up'}
-                </button>
+                        <div className="input-group">
+                            <label htmlFor="email">Email</label>
+                            <input
+                                id="email"
+                                type="email"
+                                placeholder="Enter your email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                            />
+                        </div>
 
-                <p className="auth-switch">
-                    Already have an account? <Link to="/login">Log in</Link>
-                </p>
-            </form>
+                        <div className="input-group">
+                            <label htmlFor="password">Password</label>
+                            <input
+                                id="password"
+                                type="password"
+                                placeholder="Create a password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                minLength={6}
+                                required
+                            />
+                        </div>
+
+                        <button className="auth-submit-btn" type="submit" disabled={submitting}>
+                            {submitting ? 'CREATING ACCOUNT...' : 'SIGN UP'}
+                            {!submitting && <span>→</span>}
+                        </button>
+                    </form>
+
+                    <div className="auth-switch">
+                        Already have an account? <Link to="/login">Log in</Link>
+                    </div>
+                </div>
+            </div>
         </div>
     )
 }

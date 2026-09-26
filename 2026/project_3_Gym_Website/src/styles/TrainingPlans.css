@@ -1,5 +1,4 @@
-.training-plans-page { padding: 2.5rem 0; }
-.plans-list { display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem; }
+.plans-list { display: flex; flex-direction: column; gap: 1rem; }
 .plan-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.4rem; transition: border-color 0.2s ease; }
 .plan-card:hover { border-color: var(--blue-primary); }
 .plan-meta { font-size: 0.78rem; color: var(--text-muted); margin-top: 0.75rem; padding-top: 0.6rem; border-top: 1px solid var(--border-color); }

@@ -16,18 +16,14 @@ function TrainingPlans() {
                 .select('id, name, description, created_at, created_by, profiles ( full_name )')
                 .order('created_at', { ascending: false })
 
-            // Trainers only see plans they created; admins see all
             if (role === 'trainer') {
                 query = query.eq('created_by', user.id)
             }
 
             const { data, error } = await query
 
-            if (error) {
-                setError(error.message)
-            } else {
-                setPlans(data)
-            }
+            if (error) setError(error.message)
+            else setPlans(data)
             setLoading(false)
         }
 
@@ -39,7 +35,11 @@ function TrainingPlans() {
 
     return (
         <div className="training-plans-page">
-            <h1>Training Plans</h1>
+            <div className="page-hero">
+                <span className="eyebrow">Programs</span>
+                <h1>Training Plans</h1>
+                <p>Personalized plans designed by your trainer.</p>
+            </div>
 
             {plans.length === 0 ? (
                 <p>No training plans yet.</p>
