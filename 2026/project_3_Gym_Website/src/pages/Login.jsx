@@ -40,51 +40,76 @@ function Login() {
 
         setSubmitting(false)
 
-        // Route appropriately based on role
-        if (role === 'admin') {
-            navigate('/admin-dashboard')
-        } else if (role === 'trainer') {
-            navigate('/trainer-dashboard')
-        } else {
-            navigate('/')
-        }
+        if (role === 'admin') navigate('/admin-dashboard')
+        else if (role === 'trainer') navigate('/trainer-dashboard')
+        else navigate('/')
     }
 
     return (
         <div className="auth-page">
-            <form className="auth-form" onSubmit={handleSubmit}>
-                <h2>Log In</h2>
+            <div className="auth-container">
+                <div className="auth-brand">
+                    <div className="brand-label">FORGE FITNESS</div>
+                    <h1>
+                        FORGE YOUR
+                        <span>STRONGER SELF.</span>
+                    </h1>
+                    <p>
+                        Train harder. Recover smarter.
+                        Build the version of yourself you've always wanted.
+                    </p>
+                    <div className="brand-line" />
+                    <small>PERFORMANCE • DISCIPLINE • PROGRESS</small>
+                </div>
 
-                {error && <p className="auth-error">{error}</p>}
+                <div className="auth-card">
+                    <div className="auth-header">
+                        <span className="auth-overline">MEMBER ACCESS</span>
+                        <h2>Welcome Back</h2>
+                        <p>Sign in to continue your Forge journey.</p>
+                    </div>
 
-                <label>
-                    Email
-                    <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                    />
-                </label>
+                    <form className="auth-form" onSubmit={handleSubmit}>
+                        {error && <p className="auth-error">{error}</p>}
 
-                <label>
-                    Password
-                    <input
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
-                </label>
+                        <div className="input-group">
+                            <label htmlFor="email">Email</label>
+                            <input
+                                id="email"
+                                type="email"
+                                placeholder="Enter your email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                            />
+                        </div>
 
-                <button type="submit" className="btn primary" disabled={submitting}>
-                    {submitting ? 'Logging in...' : 'Log In'}
-                </button>
+                        <div className="input-group">
+                            <div className="password-label">
+                                <label htmlFor="password">Password</label>
+                                <a href="#">Forgot password?</a>
+                            </div>
+                            <input
+                                id="password"
+                                type="password"
+                                placeholder="Enter your password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                            />
+                        </div>
 
-                <p className="auth-switch">
-                    Don't have an account? <Link to="/signup">Sign up</Link>
-                </p>
-            </form>
+                        <button className="auth-submit-btn" type="submit" disabled={submitting}>
+                            {submitting ? 'LOGGING IN...' : 'LOGIN'}
+                            {!submitting && <span>→</span>}
+                        </button>
+                    </form>
+
+                    <div className="auth-switch">
+                        Don't have an account? <Link to="/signup">Sign up</Link>
+                    </div>
+                </div>
+            </div>
         </div>
     )
 }

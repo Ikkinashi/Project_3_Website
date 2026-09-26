@@ -34,7 +34,11 @@ function Contact() {
 
     return (
         <div className="contact-page">
-            <h1>Contact Us</h1>
+            <div className="page-hero">
+                <span className="eyebrow">Get In Touch</span>
+                <h1>Contact Us</h1>
+                <p>Questions about membership, classes, or training plans? Send us a message and we'll get back to you.</p>
+            </div>
 
             <form className="contact-form" onSubmit={handleSubmit}>
                 {error && <p className="auth-error">{error}</p>}

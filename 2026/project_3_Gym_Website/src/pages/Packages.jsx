@@ -14,11 +14,8 @@ function Packages() {
                 .select('*')
                 .order('price', { ascending: true })
 
-            if (error) {
-                setError(error.message)
-            } else {
-                setPackages(data)
-            }
+            if (error) setError(error.message)
+            else setPackages(data)
             setLoading(false)
         }
 
@@ -30,7 +27,11 @@ function Packages() {
 
     return (
         <div className="packages-page">
-            <h1>Packages</h1>
+            <div className="page-hero">
+                <span className="eyebrow">Membership</span>
+                <h1>Packages</h1>
+                <p>Flexible plans built around your schedule and budget.</p>
+            </div>
 
             {packages.length === 0 ? (
                 <p>No packages available yet.</p>

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Routes, Route, Navigate, NavLink, useNavigate } from 'react-router-dom'
-import { AuthProvider, useAuth } from '../../../../Project_3_Website1/2026/project_3_Gym_Website/src/context/AuthContext'
-import ProtectedRoute from '../../../../Project_3_Website1/2026/project_3_Gym_Website/src/components/ProtectedRoute'
+import { AuthProvider, useAuth } from './context/AuthContext'
+import ProtectedRoute from './components/ProtectedRoute'
 import Home from './pages/Home'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
@@ -28,62 +28,55 @@ function Layout({ children }) {
         navigate('/login')
     }
 
+    const close = () => setMenuOpen(false)
+
     return (
         <div className="app-shell">
             <header className="navbar">
                 <div className="navbar-inner">
-                    <NavLink to="/" className="logo-text" onClick={() => setMenuOpen(false)}>
-                        Forge Fitness
+                    <NavLink to="/" className="logo" onClick={close}>
+                        <span className="logo-mark">F</span>
+                        <span className="logo-text">Forge Fitness</span>
                     </NavLink>
 
                     <button
-                        className="nav-toggle"
+                        className={`nav-toggle ${menuOpen ? 'active' : ''}`}
                         onClick={() => setMenuOpen(!menuOpen)}
                         aria-label="Toggle menu"
                     >
-                        ☰
+                        <span></span><span></span><span></span>
                     </button>
 
                     <nav className={`navbar-links ${menuOpen ? 'open' : ''}`}>
-                        <NavLink to="/" onClick={() => setMenuOpen(false)}>Home</NavLink>
-                        <NavLink to="/about" onClick={() => setMenuOpen(false)}>About</NavLink>
-                        <NavLink to="/courses" onClick={() => setMenuOpen(false)}>Courses</NavLink>
-                        <NavLink to="/trainers" onClick={() => setMenuOpen(false)}>Trainers</NavLink>
-                        <NavLink to="/packages" onClick={() => setMenuOpen(false)}>Packages</NavLink>
+                        <NavLink to="/" onClick={close} end>Home</NavLink>
+                        <NavLink to="/about" onClick={close}>About</NavLink>
+                        <NavLink to="/courses" onClick={close}>Courses</NavLink>
+                        <NavLink to="/trainers" onClick={close}>Trainers</NavLink>
+                        <NavLink to="/packages" onClick={close}>Packages</NavLink>
 
-                        {user && profile?.role === 'member' && (
-                            <>
-                                <NavLink to="/my-bookings" onClick={() => setMenuOpen(false)}>My Bookings</NavLink>
-                                <NavLink to="/billing" onClick={() => setMenuOpen(false)}>Billing</NavLink>
-                            </>
-                        )}
-
-                        {user && (
-                            <NavLink to="/profile" onClick={() => setMenuOpen(false)}>Profile</NavLink>
-                        )}
+                        {user && <NavLink to="/profile" onClick={close}>Profile</NavLink>}
 
                         {user && profile?.role === 'trainer' && (
-                            <NavLink to="/trainer-dashboard" onClick={() => setMenuOpen(false)}>Trainer Dashboard</NavLink>
+                            <NavLink to="/trainer-dashboard" onClick={close}>Trainer Dashboard</NavLink>
                         )}
 
                         {user && profile?.role === 'admin' && (
-                            <NavLink to="/admin-dashboard" onClick={() => setMenuOpen(false)}>Admin Dashboard</NavLink>
+                            <NavLink to="/admin-dashboard" onClick={close}>Admin Dashboard</NavLink>
                         )}
-
-                        <NavLink to="/contact" onClick={() => setMenuOpen(false)}>Contact</NavLink>
 
                         <div className="navbar-auth">
                             {user ? (
                                 <>
                                     <span className="signed-in-as">
-                                        {profile?.full_name || profile?.email} ({profile?.role})
+                                        {profile?.full_name || profile?.email}
+                                        <span className="role-pill">{profile?.role}</span>
                                     </span>
                                     <button className="signout-btn" onClick={handleSignOut}>
                                         Sign Out
                                     </button>
                                 </>
                             ) : (
-                                <NavLink to="/login" className="btn primary nav-login-btn" onClick={() => setMenuOpen(false)}>
+                                <NavLink to="/login" className="btn primary nav-login-btn" onClick={close}>
                                     Log In
                                 </NavLink>
                             )}
@@ -93,6 +86,16 @@ function Layout({ children }) {
             </header>
 
             <main className="page-content">{children}</main>
+
+            <footer className="site-footer">
+                <div className="footer-inner">
+                    <span>© {new Date().getFullYear()} Forge Fitness. All rights reserved.</span>
+                    <div className="footer-links">
+                        <NavLink to="/about">About</NavLink>
+                        <NavLink to="/packages">Packages</NavLink>
+                    </div>
+                </div>
+            </footer>
         </div>
     )
 }
@@ -107,7 +110,6 @@ function AppRoutes() {
     return (
         <Layout>
             <Routes>
-                {/* Public & Member Shared Website Pages */}
                 <Route path="/" element={<Home />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
@@ -117,7 +119,6 @@ function AppRoutes() {
                 <Route path="/packages" element={<Packages />} />
                 <Route path="/contact" element={<Contact />} />
 
-                {/* Protected General User/Staff Routes */}
                 <Route
                     path="/profile"
                     element={
@@ -126,6 +127,8 @@ function AppRoutes() {
                         </ProtectedRoute>
                     }
                 />
+
+                {/* Kept for direct-link backward compatibility; not in navbar */}
                 <Route
                     path="/billing"
                     element={
@@ -143,7 +146,6 @@ function AppRoutes() {
                     }
                 />
 
-                {/* Trainer Dashboard Route */}
                 <Route
                     path="/trainer-dashboard"
                     element={
@@ -152,8 +154,6 @@ function AppRoutes() {
                         </ProtectedRoute>
                     }
                 />
-
-                {/* Admin Dashboard Route */}
                 <Route
                     path="/admin-dashboard"
                     element={
@@ -163,9 +163,7 @@ function AppRoutes() {
                     }
                 />
 
-                {/* Legacy redirect fallback */}
                 <Route path="/dashboard" element={<Navigate to="/" replace />} />
-
                 <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
         </Layout>

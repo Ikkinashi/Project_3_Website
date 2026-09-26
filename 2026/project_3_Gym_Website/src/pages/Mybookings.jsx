@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../supabase/client'
 import { useAuth } from '../context/AuthContext'
+import '../styles/Courses.css'
 
 function MyBookings() {
     const { user } = useAuth()
@@ -16,11 +17,8 @@ function MyBookings() {
             .eq('status', 'confirmed')
             .order('booked_at', { ascending: false })
 
-        if (error) {
-            setError(error.message)
-        } else {
-            setBookings(data)
-        }
+        if (error) setError(error.message)
+        else setBookings(data)
         setLoading(false)
     }
 
@@ -47,7 +45,11 @@ function MyBookings() {
 
     return (
         <div className="my-bookings-page">
-            <h1>My Bookings</h1>
+            <div className="page-hero">
+                <span className="eyebrow">Your Schedule</span>
+                <h1>My Bookings</h1>
+                <p>Classes you've reserved.</p>
+            </div>
 
             {bookings.length === 0 ? (
                 <p>You haven't booked any classes yet. <a href="/courses">Browse courses</a>.</p>

@@ -22,11 +22,8 @@ function Courses() {
             `)
             .order('created_at', { ascending: false })
 
-        if (error) {
-            setError(error.message)
-        } else {
-            setCourses(data)
-        }
+        if (error) setError(error.message)
+        else setCourses(data)
     }
 
     async function fetchMyBookings() {
@@ -106,7 +103,11 @@ function Courses() {
 
     return (
         <div className="courses-page">
-            <h1>Courses</h1>
+            <div className="page-hero">
+                <span className="eyebrow">Book a Class</span>
+                <h1>Courses</h1>
+                <p>Browse our current class schedule and reserve your spot.</p>
+            </div>
 
             {error && <p className="page-error">{error}</p>}
 
