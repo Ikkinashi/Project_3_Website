@@ -1,0 +1,7 @@
+.trainers-page { padding: 2.5rem 0; }
+.trainers-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.25rem; margin-top: 1.75rem; }
+.trainer-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.4rem; transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease; }
+.trainer-card:hover { border-color: var(--blue-primary); transform: translateY(-2px); box-shadow: 0 10px 24px rgba(26, 86, 255, 0.08); }
+.trainer-card h3 { margin: 0 0 0.5rem 0; color: var(--blue-primary); }
+.trainer-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.9rem; }
+.tag { background: var(--blue-tint); color: var(--blue-primary); border: 1px solid rgba(26, 86, 255, 0.2); padding: 0.25rem 0.7rem; border-radius: 999px; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; }
