@@ -1,0 +1,321 @@
+.profile-page {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.profile-hero {
+  display: flex;
+  align-items: center;
+  gap: 1.75rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 2rem 2.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.profile-hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--blue-primary), var(--blue-bright), transparent);
+}
+
+.profile-avatar-large {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--blue-primary), var(--blue-dark));
+  color: white;
+  font-size: 2rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 6px 20px var(--blue-glow);
+}
+
+.profile-hero h1 {
+  font-size: 1.8rem;
+  text-transform: none;
+  margin-bottom: 0.5rem;
+}
+
+.profile-meta {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.student-verified-pill {
+  background: rgba(74, 222, 128, 0.1);
+  color: var(--success);
+  border: 1px solid var(--success);
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.profile-tabs {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0;
+}
+
+.profile-tab {
+  padding: 0.65rem 1.1rem;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: color 0.15s ease, border-color 0.15s ease;
+  font-family: inherit;
+}
+
+.profile-tab:hover {
+  color: var(--text-primary);
+}
+
+.profile-tab.active {
+  color: var(--blue-bright);
+  border-bottom-color: var(--blue-bright);
+}
+
+.profile-tab-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.profile-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 2rem;
+}
+
+.profile-card h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: none;
+  margin-bottom: 1.5rem;
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.75rem;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.25rem;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.detail-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+.detail-value {
+  font-size: 0.92rem;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.profile-cta {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.profile-cta p {
+  font-size: 0.88rem;
+  max-width: 400px;
+}
+
+.plan-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.plan-name {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.plan-price {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--blue-bright);
+  line-height: 1;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.empty-state p {
+  font-size: 0.88rem;
+}
+
+.enrollments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.enrollment-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 1.1rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  gap: 1rem;
+  transition: border-color 0.15s ease;
+}
+
+.enrollment-row:hover {
+  border-color: var(--blue-primary);
+}
+
+.enrollment-row strong {
+  font-size: 0.92rem;
+  color: var(--text-primary);
+  display: block;
+  margin-bottom: 0.3rem;
+}
+
+.enrollment-row p {
+  font-size: 0.82rem;
+  margin-bottom: 0.4rem;
+}
+
+.enrollment-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.status-pill {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.status-pill.active {
+  background: var(--blue-tint);
+  color: var(--blue-bright);
+  border: 1px solid var(--blue-primary);
+}
+
+.status-pill.completed {
+  background: rgba(74, 222, 128, 0.1);
+  color: var(--success);
+  border: 1px solid var(--success);
+}
+
+.invoice-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.invoice-table th {
+  text-align: left;
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.invoice-table td {
+  padding: 0.75rem;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.invoice-table tr:last-child td {
+  border-bottom: none;
+}
+
+.invoice-table tr:hover td {
+  background: var(--bg-secondary);
+}
+
+.contact-form .field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.contact-form label {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.contact-form input,
+.contact-form textarea {
+  padding: 0.7rem 1rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 0.88rem;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  font-family: inherit;
+  width: 100%;
+  resize: vertical;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+  border-color: var(--blue-primary);
+  box-shadow: 0 0 0 3px var(--blue-glow);
+}
