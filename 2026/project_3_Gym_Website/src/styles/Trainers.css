@@ -1,0 +1,123 @@
+.trainers-page {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.trainers-search {
+  max-width: 420px;
+}
+
+.trainers-search-input {
+  width: 100%;
+  padding: 0.75rem 1.1rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border-color);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  font-family: inherit;
+}
+
+.trainers-search-input:focus {
+  border-color: var(--blue-primary);
+  box-shadow: 0 0 0 3px var(--blue-glow);
+}
+
+.trainers-search-input::placeholder {
+  color: var(--text-muted);
+}
+
+.trainers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.25rem;
+}
+
+.trainer-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.75rem;
+  display: flex;
+  gap: 1.25rem;
+  align-items: flex-start;
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+.trainer-card:hover {
+  border-color: var(--blue-primary);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.3);
+}
+
+.trainer-card-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--blue-primary), var(--blue-dark));
+  color: white;
+  font-size: 1.4rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px var(--blue-glow);
+}
+
+.trainer-card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.trainer-card-body h3 {
+  font-size: 1rem;
+  color: var(--text-primary);
+  margin: 0;
+  text-transform: none;
+}
+
+.trainer-card-body p {
+  font-size: 0.84rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.trainer-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.25rem;
+}
+
+.tag {
+  background: var(--blue-tint);
+  color: var(--blue-bright);
+  border: 1px solid var(--border-color);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.trainer-rating {
+  font-size: 0.85rem;
+  color: var(--blue-bright);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.25rem;
+}
+
+.trainer-rating span {
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+}

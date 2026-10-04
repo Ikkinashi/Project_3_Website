@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../supabase/client'
+import { useAuth } from '../context/AuthContext'
+import '../styles/Packages.css'
 
 const faqs = [
   { q: 'Can I cancel my membership?', a: 'Yes, memberships can be cancelled with a 30-day notice period via the website or at the front desk.' },
@@ -14,23 +16,20 @@ export default function Packages() {
   const [features, setFeatures] = useState({})
   const [isStudent, setIsStudent] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [verifyEmail, setVerifyEmail] = useState('')
+  const [verifyInstitution, setVerifyInstitution] = useState('')
+  const [verifyStudentId, setVerifyStudentId] = useState('')
+  const [verifying, setVerifying] = useState(false)
+  const [verifyMessage, setVerifyMessage] = useState('')
+  const { user, profile, refreshProfile } = useAuth()
   const navigate = useNavigate()
 
   useEffect(() => {
     const fetchData = async () => {
-      await supabase.auth.signInWithPassword({
-      email: 'student@forgefitness.com',
-      password: 'Test@1234'
-      })
-    const { data: pkgs } = await supabase.from('packages').select('*').eq('is_active', true)
-    const { data: feats } = await supabase.from('package_features').select('*')
-    const { data: { user } } = await supabase.auth.getUser()
+      const { data: pkgs } = await supabase.from('packages').select('*').eq('is_active', true)
+      const { data: feats } = await supabase.from('package_features').select('*')
 
-
-      if (user) {
-        const { data: profile } = await supabase.from('profiles').select('is_student_verified').eq('id', user.id).single()
-        if (profile?.is_student_verified) setIsStudent(true)
-      }
+      if (profile?.is_student_verified) setIsStudent(true)
 
       const featMap = {}
       feats?.forEach(f => {
@@ -43,125 +42,158 @@ export default function Packages() {
       setLoading(false)
     }
     fetchData()
-  }, [])
+  }, [profile])
 
   const handleSelect = (pkg) => {
+    if (!user) { navigate('/login'); return }
     navigate('/billing', { state: { pkg, isStudent } })
   }
 
+  const handleVerify = async () => {
+    if (!user) { navigate('/login'); return }
+    if (!verifyEmail || !verifyInstitution || !verifyStudentId) {
+      setVerifyMessage('Please fill in all fields.')
+      return
+    }
+    setVerifying(true)
+    setVerifyMessage('')
+
+    const { error: profileError } = await supabase
+      .from('profiles')
+      .update({ is_student_verified: true })
+      .eq('id', user.id)
+
+    const { error: studentError } = await supabase
+      .from('student_profiles')
+      .upsert({
+        user_id: user.id,
+        student_id_number: verifyStudentId,
+        university_name: verifyInstitution,
+        verification_status: 'verified'
+      })
+
+    if (profileError || studentError) {
+      setVerifyMessage('Verification failed. Please try again.')
+    } else {
+      setIsStudent(true)
+      setVerifyMessage('Student status verified! Student pricing is now active.')
+      await refreshProfile()
+    }
+    setVerifying(false)
+  }
+
   return (
-    <div className="min-h-screen bg-tertiary text-white font-sans">
+    <div className="packages-page">
 
-      {/* Navbar */}
-      <nav className="flex items-center justify-between px-10 py-4 border-b border-neutral">
-        <span className="text-primary font-bold text-xl">Forge Fitness</span>
-        <div className="flex gap-8 text-secondary text-sm">
-          <a href="#" className="hover:text-white">Home</a>
-          <a href="#" className="hover:text-white">About</a>
-          <a href="#" className="hover:text-white">Classes</a>
-          <a href="#" className="hover:text-white">Trainers</a>
-          <a href="/packages" className="text-white border-b-2 border-primary pb-1">Subscription</a>
-          <a href="#" className="hover:text-white">Profile</a>
-        </div>
-        <div className="w-8 h-8 rounded-full bg-neutral" />
-      </nav>
-
-      {/* Hero */}
-      <div className="text-center py-12 px-4">
-        <h1 className="text-4xl font-bold mb-3">Membership Packages</h1>
-        <p className="text-secondary max-w-lg mx-auto">Choose the membership that fits your fitness goals. We offer flexible plans for individuals, students, and professional athletes.</p>
-        <div className="flex justify-center mt-6">
-          <div className="flex bg-neutral rounded-full p-1">
-            <button onClick={() => setIsStudent(false)} className={`px-5 py-2 rounded-full text-sm transition-all ${!isStudent ? 'bg-white text-black' : 'text-secondary'}`}>Regular Pricing</button>
-            <button onClick={() => setIsStudent(true)} className={`px-5 py-2 rounded-full text-sm transition-all ${isStudent ? 'bg-white text-black' : 'text-secondary'}`}>Student Discount</button>
-          </div>
+      <div className="packages-hero">
+        <span className="eyebrow">Membership</span>
+        <h1>Membership Packages</h1>
+        <p>Choose the membership that fits your fitness goals. We offer flexible plans for individuals, students, and professional athletes.</p>
+        <div className="pricing-toggle">
+          <button
+            onClick={() => setIsStudent(false)}
+            className={`toggle-btn ${!isStudent ? 'active' : ''}`}
+          >
+            Regular Pricing
+          </button>
+          <button
+            onClick={() => setIsStudent(true)}
+            className={`toggle-btn ${isStudent ? 'active' : ''}`}
+            disabled={!isStudent && !profile?.is_student_verified}
+            title={!isStudent && !profile?.is_student_verified ? 'Verify your student status below to unlock student pricing' : ''}
+          >
+            Student Discount
+          </button>
         </div>
       </div>
 
-      {/* Package Cards */}
       {loading ? (
-        <p className="text-center text-secondary">Loading packages...</p>
+        <p className="page-loading">Loading packages...</p>
       ) : (
-        <div className="flex justify-center gap-6 px-10 pb-12 flex-wrap">
+        <div className="packages-grid">
           {packages.map((pkg, i) => (
-            <div key={pkg.id} className={`bg-neutral rounded-2xl p-6 w-72 flex flex-col gap-4 relative ${i === 1 ? 'border-2 border-primary' : ''}`}>
-              {i === 1 && (
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-black text-xs font-bold px-3 py-1 rounded-full">MOST POPULAR</span>
-              )}
-              <span className="text-xs bg-tertiary text-secondary px-2 py-1 rounded-full w-fit">{pkg.name}</span>
-              <div>
-                <span className="text-4xl font-bold">R{isStudent ? pkg.price_student : pkg.price_regular}</span>
-                <span className="text-secondary text-sm">/mo</span>
-                {isStudent && <p className="text-primary text-xs mt-1">R{pkg.price_regular}/mo regular price</p>}
+            <div key={pkg.id} className={`package-card ${i === 1 ? 'package-card--featured' : ''}`}>
+              {i === 1 && <span className="package-badge">MOST POPULAR</span>}
+              <span className="package-tier">{pkg.name}</span>
+              <div className="package-price">
+                <div className="price-row">
+                  <span className="price-amount">R{isStudent ? pkg.price_student : pkg.price_regular}</span>
+                  <span className="price-period">/mo</span>
+                </div>
+                {isStudent && <p className="price-original">R{pkg.price_regular}/mo regular</p>}
               </div>
-              <ul className="flex flex-col gap-2 flex-1">
+              <ul className="package-features">
                 {(features[pkg.id] || []).map((f, j) => (
-                  <li key={j} className="flex items-center gap-2 text-sm text-secondary">
-                    <span className="text-primary">✓</span> {f}
-                  </li>
+                  <li key={j}><span className="feature-check">✓</span> {f}</li>
                 ))}
               </ul>
               <button
                 onClick={() => handleSelect(pkg)}
-                className={`mt-4 py-3 rounded-xl text-sm font-semibold transition-all ${i === 1 ? 'bg-primary text-black hover:opacity-90' : 'border border-secondary text-white hover:border-primary'}`}
+                className={`package-btn ${i === 1 ? 'package-btn--primary' : 'package-btn--secondary'}`}
               >
-                {i === 0 ? 'Current Plan' : i === 1 ? 'Upgrade to Pro' : 'Contact Sales'}
+                {!user ? 'Sign In to Join' : i === 0 ? 'Current Plan' : i === 1 ? 'Upgrade to Pro' : 'Contact Sales'}
               </button>
             </div>
           ))}
         </div>
       )}
 
-      {/* Student Verification */}
-      <div className="mx-10 mb-12 bg-neutral rounded-2xl p-8 flex gap-8 flex-wrap">
-        <div className="flex-1 min-w-60">
-          <h2 className="text-2xl font-bold mb-3">Student Membership Verification</h2>
-          <p className="text-secondary text-sm mb-6">Verify your student status to unlock discounted prices for all membership tiers.</p>
-          <div className="flex gap-4 flex-wrap">
-            <div className="bg-tertiary rounded-xl p-4 flex-1 min-w-40">
-              <p className="font-semibold text-sm mb-1">Instant Approval</p>
-              <p className="text-secondary text-xs">Verify with your university email or student ID card.</p>
+      <div className="verification-section">
+        <div className="verification-info">
+          <span className="eyebrow">Students</span>
+          <h2>Student Membership Verification</h2>
+          <p>Verify your student status to unlock discounted prices for all membership tiers. Get fit while you study at any accredited institution.</p>
+          <div className="verification-cards">
+            <div className="verification-card">
+              <span className="verification-icon">WHENEVER YOU NEED</span>
+              <p className="verification-card-title">Instant Approval</p>
+              <p>Verify with your university email or student ID card.</p>
             </div>
-            <div className="bg-tertiary rounded-xl p-4 flex-1 min-w-40">
-              <p className="font-semibold text-sm mb-1">Renewable Yearly</p>
-              <p className="text-secondary text-xs">Renewal required every 12 months with valid proof.</p>
+            <div className="verification-card">
+              <span className="verification-icon">EVERY TIME, ALL THE TIME</span>
+              <p className="verification-card-title">Renewable Yearly</p>
+              <p>Renewal required every 12 months with valid proof.</p>
             </div>
           </div>
         </div>
-        <div className="flex flex-col gap-3 w-64">
-          <label className="text-sm text-secondary">Student Email</label>
-          <input className="bg-tertiary border border-neutral rounded-lg px-4 py-2 text-sm text-white outline-none focus:border-primary" placeholder="you@university.edu" />
-          <label className="text-sm text-secondary">Institution Name</label>
-          <input className="bg-tertiary border border-neutral rounded-lg px-4 py-2 text-sm text-white outline-none focus:border-primary" placeholder="State University" />
-          <button className="bg-primary text-black font-semibold py-2 rounded-lg text-sm hover:opacity-90 mt-2">Verify Status</button>
+        <div className="verification-form">
+          {isStudent ? (
+            <div className="verified-badge">
+              <span>✓</span>
+              <p>Student status verified. Student pricing is active.</p>
+            </div>
+          ) : (
+            <>
+              <label>Student Email</label>
+              <input type="email" placeholder="you@university.edu" value={verifyEmail} onChange={e => setVerifyEmail(e.target.value)} />
+              <label>Student ID Number</label>
+              <input type="text" placeholder="230270565" value={verifyStudentId} onChange={e => setVerifyStudentId(e.target.value)} />
+              <label>Institution Name</label>
+              <input type="text" placeholder="Cape Peninsula University of Technology" value={verifyInstitution} onChange={e => setVerifyInstitution(e.target.value)} />
+              {verifyMessage && (
+                <p className={verifyMessage.includes('verified') ? 'verify-success' : 'verify-error'}>{verifyMessage}</p>
+              )}
+              <button className="btn primary" onClick={handleVerify} disabled={verifying}>
+                {verifying ? 'Verifying...' : 'Verify Status'}
+              </button>
+              {!user && <p className="verify-note">You must be signed in to verify your student status.</p>}
+            </>
+          )}
         </div>
       </div>
 
-      {/* FAQ */}
-      <div className="px-10 pb-16">
-        <h2 className="text-2xl font-bold text-center mb-8">Frequently Asked Questions</h2>
-        <div className="grid grid-cols-2 gap-6 max-w-4xl mx-auto">
+      <div className="faq-section">
+        <span className="eyebrow" style={{ display: 'block', textAlign: 'center', marginBottom: '0.5rem' }}>FAQ</span>
+        <h2>Frequently Asked Questions</h2>
+        <div className="faq-grid">
           {faqs.map((faq, i) => (
-            <div key={i} className="border-b border-neutral pb-4">
-              <p className="font-semibold text-sm mb-1">{faq.q}</p>
-              <p className="text-secondary text-sm">{faq.a}</p>
+            <div key={i} className="faq-item">
+              <p className="faq-question">{faq.q}</p>
+              <p className="faq-answer">{faq.a}</p>
             </div>
           ))}
         </div>
       </div>
-
-      {/* Footer */}
-      <footer className="border-t border-neutral px-10 py-6 flex justify-between text-secondary text-xs">
-        <div>
-          <p className="text-white font-bold">Forge Fitness Inc.</p>
-          <p>© 2024 Forge Fitness Inc. All rights reserved.</p>
-        </div>
-        <div className="flex gap-6">
-          <a href="#" className="hover:text-white">Help</a>
-          <a href="#" className="hover:text-white">Terms</a>
-          <a href="#" className="hover:text-white">Privacy</a>
-        </div>
-      </footer>
 
     </div>
   )

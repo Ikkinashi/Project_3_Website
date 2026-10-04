@@ -1,0 +1,62 @@
+.courses-page,
+.my-bookings-page {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.courses-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.25rem;
+}
+
+.course-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 1.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
+}
+
+.course-card:hover {
+    border-color: var(--blue-primary);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.3);
+}
+
+.course-difficulty {
+    display: inline-block;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--blue-bright);
+    background: var(--blue-tint);
+    border: 1px solid rgba(0, 210, 255, 0.2);
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    width: fit-content;
+}
+
+.course-card h3 {
+    font-size: 1rem;
+    color: var(--text-primary);
+    text-transform: none;
+    margin: 0;
+}
+
+.course-card p {
+    font-size: 0.85rem;
+    flex: 1;
+}
+
+.course-trainer {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    font-weight: 600;
+}
