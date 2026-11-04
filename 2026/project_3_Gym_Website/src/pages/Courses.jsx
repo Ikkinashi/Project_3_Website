@@ -11,30 +11,30 @@ function Courses() {
     const [error, setError] = useState('')
     const [busyId, setBusyId] = useState(null)
 
-    async function fetchCourses() {
-        const { data, error } = await supabase
-            .from('courses')
-            .select('id, title, description, difficulty, trainer_id, trainers ( id, name, bio )')
-
-        if (error) setError(error.message)
-        else setCourses(data ?? [])
-    }
-
-
     useEffect(() => {
-    async function load() {
-        setLoading(true)
-        await fetchCourses()
-        if (user) {
-            const { data } = await supabase
-                .from('enrollments')
-                .select('course_id')
-                .eq('user_id', user.id)
-            if (data) setEnrolledIds(new Set(data.map(e => e.course_id)))
+        async function load() {
+            setLoading(true)
+            const { data, error } = await supabase
+                .from('courses')
+                .select('id, title, description, level, category, duration_minutes, price, schedule_day, schedule_time, trainer_id, trainers ( id, name )')
+                .eq('is_active', true)
+                .order('title')
+
+            if (error) setError(error.message)
+            else setCourses(data ?? [])
+
+            if (user) {
+                const { data: rows } = await supabase
+                    .from('enrollments')
+                    .select('course_id')
+                    .eq('user_id', user.id)
+                if (rows) setEnrolledIds(new Set(rows.map(r => r.course_id)))
+            } else {
+                setEnrolledIds(new Set())
+            }
+            setLoading(false)
         }
-        setLoading(false)
-    }
-    load()
+        load()
     }, [user])
 
     async function handleEnroll(courseId) {
@@ -47,7 +47,8 @@ function Courses() {
             .insert([{ user_id: user.id, course_id: courseId }])
 
         setBusyId(null)
-        if (error) { setError(error.message); return }
+        // 23505 = already enrolled, treat as success
+        if (error && error.code !== '23505') { setError(error.message); return }
         setEnrolledIds(prev => new Set(prev).add(courseId))
     }
 
@@ -89,28 +90,23 @@ function Courses() {
 
                         return (
                             <div key={course.id} className="course-card">
-                                {course.difficulty && (
-                                    <span className="course-difficulty">{course.difficulty}</span>
-                                )}
+                                {course.level && <span className="course-difficulty">{course.level}</span>}
                                 <h3>{course.title}</h3>
                                 <p>{course.description}</p>
                                 {course.trainers && (
                                     <p className="course-trainer">Trainer: {course.trainers.name}</p>
                                 )}
+                                {(course.schedule_day || course.duration_minutes) && (
+                                    <p className="course-trainer">
+                                        {[course.schedule_day, course.schedule_time, course.duration_minutes && `${course.duration_minutes} min`].filter(Boolean).join(' · ')}
+                                    </p>
+                                )}
                                 {isEnrolled ? (
-                                    <button
-                                        className="btn secondary"
-                                        disabled={isBusy}
-                                        onClick={() => handleUnenroll(course.id)}
-                                    >
+                                    <button className="btn secondary" disabled={isBusy} onClick={() => handleUnenroll(course.id)}>
                                         {isBusy ? 'Cancelling...' : 'Unenroll'}
                                     </button>
                                 ) : (
-                                    <button
-                                        className="btn primary"
-                                        disabled={isBusy}
-                                        onClick={() => handleEnroll(course.id)}
-                                    >
+                                    <button className="btn primary" disabled={isBusy} onClick={() => handleEnroll(course.id)}>
                                         {isBusy ? 'Enrolling...' : user ? 'Enroll' : 'Log In to Enroll'}
                                     </button>
                                 )}

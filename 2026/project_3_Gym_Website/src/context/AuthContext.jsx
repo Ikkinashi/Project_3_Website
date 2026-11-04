@@ -7,13 +7,14 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [profileLoading, setProfileLoading] = useState(false);
 
   const fetchProfile = useCallback(async (userId) => {
     const { data, error } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", userId)
-      .single();
+        .from("profiles")
+        .select("*")
+        .eq("id", userId)
+        .maybeSingle();
 
     if (error) {
       console.error("Failed to fetch profile:", error.message);
@@ -24,45 +25,35 @@ export function AuthProvider({ children }) {
   }, []);
 
   useEffect(() => {
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-      setUser(session?.user ?? null);
-      if (session?.user) await fetchProfile(session.user.id);
-      setLoading(false);
-    });
-
-    const { data: listener } = supabase.auth.onAuthStateChange(
-      async (_event, session) => {
-        setUser(session?.user ?? null);
-        if (session?.user) await fetchProfile(session.user.id);
-        else setProfile(null);
+    // NOTE: never await supabase calls directly inside this callback (it can deadlock),
+    // so the profile fetch is deferred with setTimeout.
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      const u = session?.user ?? null;
+      setUser(u);
+      if (u) {
+        setProfileLoading(true);
+        setTimeout(async () => {
+          await fetchProfile(u.id);
+          setProfileLoading(false);
+          setLoading(false);
+        }, 0);
+      } else {
+        setProfile(null);
+        setProfileLoading(false);
         setLoading(false);
       }
-    );
+    });
 
     return () => listener.subscription.unsubscribe();
   }, [fetchProfile]);
 
+  // The profile row is created by a database trigger on auth.users.
   async function signUp(email, password, fullName) {
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: { data: { full_name: fullName } },
     });
-
-    if (!error && data?.user) {
-      const { error: profileError } = await supabase.from("profiles").insert([
-        {
-          id: data.user.id,
-          full_name: fullName,
-          is_student_verified: false,
-          role: "member",
-        },
-      ]);
-
-      if (profileError) console.error("Profile creation failed:", profileError.message);
-      else await fetchProfile(data.user.id);
-    }
-
     return { data, error };
   }
 
@@ -81,15 +72,17 @@ export function AuthProvider({ children }) {
     profile,
     role: profile?.role ?? null,
     loading,
+    profileLoading,
     signUp,
     signIn,
     signOut,
-    refreshProfile: () => user ? fetchProfile(user.id) : null,
+    refreshProfile: () => (user ? fetchProfile(user.id) : null),
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) throw new Error("useAuth must be used within an AuthProvider");

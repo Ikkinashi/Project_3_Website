@@ -2,9 +2,9 @@ import { Navigate } from 'react-router-dom'
 import { useAuth } from "../context/AuthContext.jsx";
 
 function ProtectedRoute({ children, allowedRoles }) {
-    const { user, role, loading } = useAuth()
+    const { user, role, loading, profileLoading } = useAuth()
 
-    if (loading) {
+    if (loading || profileLoading) {
         return <div className="page-loading">Loading...</div>
     }
 

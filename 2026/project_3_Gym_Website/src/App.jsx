@@ -12,6 +12,7 @@ import Packages from './pages/Packages'
 import Billing from './pages/Billing'
 import Profile from './pages/Profile'
 import Contact from './pages/Contact'
+import TrainingPlans from './pages/TrainingPlans'
 import MyBookings from './pages/MyBookings'
 import TrainerDashboard from './pages/TrainerDashboard'
 import AdminDashboard from './pages/AdminDashboard'
@@ -53,6 +54,12 @@ function Layout({ children }) {
                         <NavLink to="/courses" onClick={close}>Courses</NavLink>
                         <NavLink to="/trainers" onClick={close}>Trainers</NavLink>
                         <NavLink to="/packages" onClick={close}>Packages</NavLink>
+                        <NavLink to="/training-plans" onClick={close}>Training Plans</NavLink>
+                        <NavLink to="/contact" onClick={close}>Contact</NavLink>
+
+                        {user && profile?.role === 'member' && (
+                            <NavLink to="/my-bookings" onClick={close}>My Courses</NavLink>
+                        )}
 
                         {user && <NavLink to="/profile" onClick={close}>Profile</NavLink>}
 
@@ -93,6 +100,7 @@ function Layout({ children }) {
                     <div className="footer-links">
                         <NavLink to="/about">About</NavLink>
                         <NavLink to="/packages">Packages</NavLink>
+                        <NavLink to="/contact">Contact</NavLink>
                     </div>
                 </div>
             </footer>
@@ -118,6 +126,7 @@ function AppRoutes() {
                 <Route path="/trainers" element={<Trainers />} />
                 <Route path="/packages" element={<Packages />} />
                 <Route path="/contact" element={<Contact />} />
+                <Route path="/training-plans" element={<TrainingPlans />} />
 
                 <Route
                     path="/profile"
